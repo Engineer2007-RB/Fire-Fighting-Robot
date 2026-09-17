@@ -1,0 +1,162 @@
+//Value Initialization
+
+//Flame Sensor Pin
+const int flamepin1 = 9;
+const int flamepin2 = 12;
+const int flamepin3 = 8;
+
+//Motor Pin
+const int ENA = 2;
+const int R1 = 6; // Right Forward
+const int L1 = 7; // Left Forward
+const int ENB = 3;
+const int R2 = 4; // Right Backward
+const int L2 = 5; // Left Backward
+
+//Alarm Pin
+const int alarm = 11;
+
+
+//Water Pump
+const int waterpump = 13;
+
+void setup() {
+//Value Setting
+pinMode(flamepin1, INPUT);
+pinMode(flamepin2, INPUT);
+pinMode(flamepin3, INPUT);
+pinMode(ENA, OUTPUT);
+pinMode(ENB, OUTPUT);
+pinMode(R1, OUTPUT);
+pinMode(R2, OUTPUT);
+pinMode(L1, OUTPUT);
+pinMode(L2, OUTPUT);
+pinMode(alarm, OUTPUT);
+pinMode(waterpump, OUTPUT);
+
+Serial.begin(9600);
+}
+
+void loop() {
+  // Flame Sensor Value storing in new int variable
+int f1 = digitalRead(flamepin1);
+int f2 = digitalRead(flamepin2);
+int f3 = digitalRead(flamepin3);
+
+//   // Print Flame Sensor Values (for debugging)
+//   Serial.print("Flame Sensor Values: ");
+//   Serial.print(f1);
+//   Serial.print(", ");
+//   Serial.print(f2);
+//   Serial.print(", ");
+//   Serial.println(f3);
+
+//Condition Implementation
+if (f1 == 0 && f2 == 0 && f3 == 0){
+right();
+alarming();
+firefight();
+}
+else if (f1 == 1 && f2 == 0 && f3 == 0){
+right2();
+alarming();
+firefight();
+}
+else if (f1 == 0 && f2 == 1 && f3 == 0){
+left();
+alarming();
+digitalWrite(waterpump,LOW);
+}
+else if (f1 == 0 && f2 == 0 && f3 == 1){
+left2();
+alarming();
+firefight();
+}
+else if (f1 == 1 && f2 == 1 && f3 == 0){
+right();
+alarming();
+digitalWrite(waterpump,LOW);
+}
+else if (f1 == 0 && f2 == 1 && f3 == 1){
+left();
+alarming();
+digitalWrite(waterpump,LOW);
+}
+else if (f1 == 1 && f2 == 0 && f3 == 1){
+alarming();
+firefight();
+stop();
+}
+else if (f1 == 1 && f2 == 1 && f3 == 1){
+digitalWrite(alarm, LOW);
+digitalWrite(waterpump,LOW);
+stop();
+}
+
+}
+void forward(){
+  digitalWrite(ENA, HIGH);
+digitalWrite(ENB, HIGH);
+  digitalWrite(R1, HIGH);
+  digitalWrite(L1, HIGH);
+    digitalWrite(R2, LOW);
+  digitalWrite(L2, LOW);
+}
+
+void backward(){
+  digitalWrite(ENA, HIGH);
+digitalWrite(ENB, HIGH);
+  digitalWrite(R2, HIGH);
+  digitalWrite(L2, HIGH);
+    digitalWrite(R1, LOW);
+  digitalWrite(L1, LOW);
+}
+
+void right(){
+  digitalWrite(ENA, HIGH);
+digitalWrite(ENB, HIGH);
+  digitalWrite(R2, HIGH);
+  digitalWrite(L1, HIGH);
+    digitalWrite(R1, LOW);
+  digitalWrite(L2, LOW);
+}
+
+void right2(){
+  analogWrite(ENA, 150);
+  analogWrite(ENB, 150);
+  digitalWrite(R2, HIGH);
+  digitalWrite(L1, HIGH);
+    digitalWrite(R1, LOW);
+  digitalWrite(L2, LOW);
+}
+
+void left(){
+  digitalWrite(ENA, HIGH);
+digitalWrite(ENB, HIGH);
+  digitalWrite(R1, HIGH);
+  digitalWrite(L2, HIGH);
+      digitalWrite(R2, LOW);
+  digitalWrite(L1, LOW);
+}
+
+void left2(){
+  analogWrite(ENA, 150);
+  analogWrite(ENB, 150);
+  digitalWrite(R1, HIGH);
+  digitalWrite(L2, HIGH);
+      digitalWrite(R2, LOW);
+  digitalWrite(L1, LOW);
+}
+
+void stop(){
+    digitalWrite(ENA, LOW);
+  digitalWrite(ENB, LOW);
+}
+
+void alarming(){
+  digitalWrite(alarm, HIGH);
+}
+
+void firefight(){
+  digitalWrite(waterpump,HIGH);
+}
